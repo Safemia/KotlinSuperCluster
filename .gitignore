@@ -1,0 +1,50 @@
+# Gradle
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Kotlin
+*.class
+*.jar
+*.war
+*.ear
+*.sar
+*.zip
+*.tar
+*.gz
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.swp
+.swo
