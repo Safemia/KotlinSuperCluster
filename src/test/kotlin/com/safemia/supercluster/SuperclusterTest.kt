@@ -34,7 +34,7 @@ class SuperclusterTest {
         val index = Supercluster(SuperclusterOptions(radius = 40, maxZoom = 16))
         index.load(points)
 
-        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2)
+        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.0)
         assertTrue(clusters.isNotEmpty(), "Should return clusters")
         println("Found ${clusters.size} clusters at zoom level 2")
     }
@@ -46,12 +46,12 @@ class SuperclusterTest {
         index.load(points)
 
         // Query around San Francisco area
-        val sfClusters = index.getClusters(listOf(-123.0, 37.0, -122.0, 38.0), 10)
+        val sfClusters = index.getClusters(listOf(-123.0, 37.0, -122.0, 38.0), 10.0)
         assertTrue(sfClusters.isNotEmpty(), "Should find points near SF")
         println("Found ${sfClusters.size} points/clusters near SF")
         
         // Query around New York area  
-        val nycClusters = index.getClusters(listOf(-75.0, 40.0, -73.0, 41.0), 10)
+        val nycClusters = index.getClusters(listOf(-75.0, 40.0, -73.0, 41.0), 10.0)
         assertTrue(nycClusters.isNotEmpty(), "Should find points near NYC")
         println("Found ${nycClusters.size} points/clusters near NYC")
     }
@@ -62,7 +62,7 @@ class SuperclusterTest {
         val index = Supercluster(SuperclusterOptions(radius = 200, maxZoom = 16))
         index.load(points)
 
-        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2)
+        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.0)
         
         for (cluster in clusters) {
             val isCluster = cluster.properties["cluster"] as? Boolean ?: false
@@ -89,7 +89,7 @@ class SuperclusterTest {
         val index = Supercluster(SuperclusterOptions(radius = 200, maxZoom = 16))
         index.load(points)
 
-        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2)
+        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.0)
         
         for (cluster in clusters) {
             val isCluster = cluster.properties["cluster"] as? Boolean ?: false
@@ -110,7 +110,7 @@ class SuperclusterTest {
         val index = Supercluster(SuperclusterOptions(radius = 200, maxZoom = 16))
         index.load(points)
 
-        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2)
+        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.0)
         
         for (cluster in clusters) {
             val isCluster = cluster.properties["cluster"] as? Boolean ?: false
@@ -131,11 +131,28 @@ class SuperclusterTest {
         val index = Supercluster(SuperclusterOptions(radius = 40, maxZoom = 16))
         index.load(points)
 
-        val tile = index.getTile(2, 0, 1)
+        val tile = index.getTile(2.0, 0, 1)
         if (tile != null) {
             assertTrue(tile.features.isNotEmpty(), "Tile should contain features")
             println("Tile contains ${tile.features.size} features")
         }
+    }
+
+    @Test
+    fun testDoubleZoomParameter() {
+        val points = createTestPoints()
+        val index = Supercluster(SuperclusterOptions(radius = 40, maxZoom = 16))
+        index.load(points)
+
+        // Test with fractional zoom level
+        val clusters25 = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.5)
+        val clusters2 = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.0)
+        
+        // Both should work and return the same results (since zoom is floored internally)
+        assertTrue(clusters25.isNotEmpty(), "Should return clusters for fractional zoom")
+        assertEquals(clusters2.size, clusters25.size, "Fractional zoom should be floored to integer")
+        
+        println("Found ${clusters25.size} clusters at zoom level 2.5")
     }
 
     @Test
@@ -163,7 +180,7 @@ class SuperclusterTest {
         ))
         index.load(points)
 
-        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2)
+        val clusters = index.getClusters(listOf(-180.0, -85.0, 180.0, 85.0), 2.0)
         
         for (cluster in clusters) {
             val isCluster = cluster.properties["cluster"] as? Boolean ?: false

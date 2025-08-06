@@ -87,7 +87,7 @@ class Supercluster(private val options: SuperclusterOptions = SuperclusterOption
         return this
     }
 
-    fun getClusters(bbox: List<Double>, zoom: Int): List<Feature> {
+    fun getClusters(bbox: List<Double>, zoom: Double): List<Feature> {
         var minLng = ((bbox[0] + 180) % 360 + 360) % 360 - 180
         val minLat = maxOf(-90.0, minOf(90.0, bbox[1]))
         var maxLng = if (bbox[2] == 180.0) 180.0 else ((bbox[2] + 180) % 360 + 360) % 360 - 180
@@ -162,9 +162,9 @@ class Supercluster(private val options: SuperclusterOptions = SuperclusterOption
         return leaves
     }
 
-    fun getTile(z: Int, x: Int, y: Int): Tile? {
+    fun getTile(z: Double, x: Int, y: Int): Tile? {
         val tree = trees[limitZoom(z)]!!
-        val z2 = 1 shl z
+        val z2 = 1 shl z.toInt()
         val extent = options.extent
         val radius = options.radius
         val p = radius.toFloat() / extent
@@ -288,8 +288,8 @@ class Supercluster(private val options: SuperclusterOptions = SuperclusterOption
         }
     }
 
-    private fun limitZoom(z: Int): Int {
-        return maxOf(options.minZoom, minOf(floor(z.toDouble()).toInt(), options.maxZoom + 1))
+    private fun limitZoom(z: Double): Int {
+        return maxOf(options.minZoom, minOf(floor(z).toInt(), options.maxZoom + 1))
     }
 
     private fun cluster(tree: KDBush, zoom: Int): FloatArray {
